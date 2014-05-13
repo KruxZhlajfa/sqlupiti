@@ -36,6 +36,9 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_sqlupiti_question extends question_graded_automatically_with_countback {
+    
+    public $server;
+    public $username;
 
     public function get_expected_data() {
         // TODO.

@@ -49,28 +49,21 @@ class qtype_sqlupiti_edit_form extends question_edit_form {
 		$mform->addElement('editor', 'sqlanswer', get_string('sqlquery','qtype_sqlupiti'));
 		$mform->setType('sqlanswer', PARAM_RAW);
 		
-		$mform->addElement('header','databases', 'Podaci za povezivanje');
+		$mform->addElement('header','databases', get_string('connect', 'qtype_sqlupiti'));
 		//$mform->setExpanded('foo'); nece delat, ne znam zakej
-		$mform->addElement('text', 'server', 'Server za spajanje na bazu');
-		$mform->addElement('text', 'username', 'Username za server');
-		$mform->addElement('password', 'password', 'Password za server');
-		$mform->addElement('text', 'database', 'Ime baze');
+		$mform->addElement('text', 'server', get_string('conserver', 'qtype_sqlupiti'));
+		$mform->addElement('text', 'username', get_string('conuser', 'qtype_sqlupiti'));
+		$mform->addElement('password', 'password', get_string('conpass', 'qtype_sqlupiti'));
+		$mform->addElement('text', 'database', get_string('condbname', 'qtype_sqlupiti'));
 		
-		$mform->addElement('header', 'picture', 'ER model');
-		$mform->addElement('filepicker', 'ERmodel', 'ER Model');
+		$mform->addElement('header', 'picture', get_string('ermodel', 'qtype_sqlupiti'));
+		$mform->addElement('filepicker', 'ERmodel', get_string('ermodel', 'qtype_sqlupiti'));
+                
+                
 		
 		
 		//$this->add_interactive_settings();
     }
-	
-	/*public function validation($data){
-	
-		if ($data = $mform->get_data()) {
-			$destination_directory="C:\Program Files (x86)\VertrigoServ\www\moodle\question\type\sqlupiti\image";
-			$mform->save_files($destination_directory);
-		}
-
-	}*/
 
     protected function data_preprocessing($question) {
         $question = parent::data_preprocessing($question);

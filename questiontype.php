@@ -53,30 +53,59 @@ class qtype_sqlupiti extends question_type {
 
     public function save_question_options($question) {
 		
-		global $DB;
+        global $DB;
 		
-		$context = $question->context;
+        $context = $question->context;
+	// Fetch old answer ids so that we can reuse them.
+        $oldanswers = $DB->get_records('question_answers',
+                    array('question' => $question->id), 'id ASC');
 		
-		
-		//$query = $DB->get_record('question_answers', array('question' => $question->id));
-        if (!$query) {
-            $query = new stdClass();
-            $query->questionid = $question->id;
-            $query->sqlquery = '';
-            $query->id = $DB->insert_record('question_answers', $query);
+        /*$answer = $DB->get_record('question_answers', array('question' => $question->id));
+        //$answer = array_shift($oldanswers);
+        if (!$answer) {
+            $answer = new stdClass();
+            $answer->answer = '';
+            $answer->id = $DB->insert_record('question_answers', $answer);
         }
 		
-		$query->sqlquery = $question->sqlanswer;
+	$answer->answer = $question->username;
 		
-		$DB->update_record('question_answers', $query);
+	$DB->update_record('question_answers', $answer);
+        
+        $parentresult = parent::save_question_options($question);
+        if ($parentresult !== null) {
+            // Parent function returns null if all is OK.
+            return $parentresult;
+        }*/
+        
+        if ($options = $DB->get_record('question_sqlupiti', array('question' => $question->id))) {
+            // No need to do anything, since the answer IDs won't have changed
+            // But we'll do it anyway, just for robustness.
+            $options->server  = $server;
+            $options->username = $username;
+            $DB->update_record('question_sqlupiti', $options);
+        } else {
+            $options = new stdClass();
+            $options->question    = $question->id;
+            $options->server  = $server;
+            $options->username = $username;
+            $DB->insert_record('question_sqlupiti', $options);
+        }
 		
         $this->save_hints($question);
-		//tu napravit da se snimi ono kaj se upiše u text box...
+	//tu napravit da se snimi ono kaj se upiše u text box...
+    }
+    
+    public function get_question_options($question){
+        
+        
+        
     }
 
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         // TODO.
         parent::initialise_question_instance($question, $questiondata);
+        $this->initialise_question_answers($question, $questiondata);
     }
 
     public function get_random_guess_score($questiondata) {
