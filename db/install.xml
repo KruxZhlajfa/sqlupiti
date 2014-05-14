@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="question/type/sqlupiti/db" VERSION="20140514" COMMENT="XMLDB file for Moodle question/type/sqlupiti"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="question_sqlupiti" COMMENT="Defines the extra fields necessary">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Foreign key references question.id."/>
+        <FIELD NAME="sqlanswer" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The correct SQL query for the question"/>
+        <FIELD NAME="server" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The server in which the database with which the query works for"/>
+        <FIELD NAME="username" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The username for the server"/>
+        <FIELD NAME="password" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The password of the server"/>
+        <FIELD NAME="dbname" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The name of the database with which the query works"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="questionid" TYPE="foreign" FIELDS="questionid" REFTABLE="question" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

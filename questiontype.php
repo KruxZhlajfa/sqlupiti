@@ -40,6 +40,11 @@ require_once($CFG->dirroot . '/question/type/sqlupiti/question.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_sqlupiti extends question_type {
+    
+    public function extra_question_fields() {
+        return array('question_sqlupiti', 'id', 'questionid', 'sqlanswer',
+            'server', 'username', 'password', 'dbname');
+    }
 
     public function move_files($questionid, $oldcontextid, $newcontextid) {
         parent::move_files($questionid, $oldcontextid, $newcontextid);
@@ -78,7 +83,7 @@ class qtype_sqlupiti extends question_type {
             return $parentresult;
         }*/
         
-        if ($options = $DB->get_record('question_sqlupiti', array('question' => $question->id))) {
+        if ($options = $DB->get_record('question_sqlupiti', array('questionid' => $question->id))) {
             // No need to do anything, since the answer IDs won't have changed
             // But we'll do it anyway, just for robustness.
             $options->server  = $server;
@@ -86,9 +91,9 @@ class qtype_sqlupiti extends question_type {
             $DB->update_record('question_sqlupiti', $options);
         } else {
             $options = new stdClass();
-            $options->question    = $question->id;
-            $options->server  = $server;
-            $options->username = $username;
+            $options->question  = $question->id;
+            $options->server    = $server;
+            $options->username  = $username;
             $DB->insert_record('question_sqlupiti', $options);
         }
 		
@@ -96,11 +101,11 @@ class qtype_sqlupiti extends question_type {
 	//tu napravit da se snimi ono kaj se upiše u text box...
     }
     
-    public function get_question_options($question){
+    /*public function get_question_options($question){
         
         
         
-    }
+    }*/
 
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         // TODO.

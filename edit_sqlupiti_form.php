@@ -38,11 +38,6 @@ defined('MOODLE_INTERNAL') || die();
 class qtype_sqlupiti_edit_form extends question_edit_form {
 
     protected function definition_inner($mform) {
-		/*$mform->addElement('text', 'sqlqueryanswer', 'Točan SQL upit:');
-		$mform->addElement('text', 'servername', 'Server na kojoj se nalazi baza za ispitivanje:');
-		$mform->addElement('text', 'sqlqueryanswer', 'Username za taj server:');
-		$mform->addElement('text', 'sqlqueryanswer', 'Password za taj server:');
-		$mform->addElement('text', 'sqlqueryanswer', 'Ime baze s servera (točan naziv u bazi):');*/
 		
 		$mform->addElement('header','answers', get_string('answer', 'qtype_sqlupiti'));
 		$mform->setExpanded('foo'); //nece delat, ne znam zakej
