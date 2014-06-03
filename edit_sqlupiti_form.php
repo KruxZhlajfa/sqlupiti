@@ -38,21 +38,24 @@ defined('MOODLE_INTERNAL') || die();
 class qtype_sqlupiti_edit_form extends question_edit_form {
 
     protected function definition_inner($mform) {
+        
+        $attributes='rows="6" cols="175"';
 		
-		$mform->addElement('header','answers', get_string('answer', 'qtype_sqlupiti'));
-		$mform->setExpanded('foo'); //nece delat, ne znam zakej
-		$mform->addElement('editor', 'sqlanswer', get_string('sqlquery','qtype_sqlupiti'));
-		$mform->setType('sqlanswer', PARAM_RAW);
-		
-		$mform->addElement('header','databases', get_string('connect', 'qtype_sqlupiti'));
-		//$mform->setExpanded('foo'); nece delat, ne znam zakej
-		$mform->addElement('text', 'server', get_string('conserver', 'qtype_sqlupiti'));
-		$mform->addElement('text', 'username', get_string('conuser', 'qtype_sqlupiti'));
-		$mform->addElement('password', 'password', get_string('conpass', 'qtype_sqlupiti'));
-		$mform->addElement('text', 'database', get_string('condbname', 'qtype_sqlupiti'));
-		
-		$mform->addElement('header', 'picture', get_string('ermodel', 'qtype_sqlupiti'));
-		$mform->addElement('filepicker', 'ERmodel', get_string('ermodel', 'qtype_sqlupiti'));
+        $mform->addElement('header','answers', get_string('answer', 'qtype_sqlupiti'));
+	$mform->setExpanded('answers');
+        $mform->addElement('textarea', 'sqlanswer', get_string('sqlquery','qtype_sqlupiti'), $attributes);
+	$mform->setType('sqlanswer', PARAM_RAW);
+	
+	$mform->addElement('header','databases', get_string('connect', 'qtype_sqlupiti'));
+        $mform->setExpanded('databases');
+	$mform->addElement('text', 'server', get_string('conserver', 'qtype_sqlupiti'));
+	$mform->addElement('text', 'username', get_string('conuser', 'qtype_sqlupiti'));
+	$mform->addElement('text', 'password', get_string('conpass', 'qtype_sqlupiti'));
+	$mform->addElement('text', 'dbname', get_string('condbname', 'qtype_sqlupiti'));
+        $mform->closeHeaderBefore('databases');
+	
+	$mform->addElement('header', 'picture', get_string('ermodel', 'qtype_sqlupiti'));
+	$mform->addElement('filepicker', 'ERmodel', get_string('ermodel', 'qtype_sqlupiti'));
                 
                 
 		

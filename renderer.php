@@ -40,8 +40,18 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             question_display_options $options) {
 
         $question = $qa->get_question();
+        $currentanswer = $qa->get_last_qt_var('sqlanswer');
 
         $questiontext = $question->format_questiontext($qa);
+        $inputname = $qa->get_qt_field_name('sqlanswer');
+        
+        $inputattributes = array(
+            'type' => 'textarea',
+            'name' => $inputname,
+            'value' => $currentanswer,
+            'id' => $inputname,
+        );
+        
         $placeholder = false;
         if (preg_match('/_____+/', $questiontext, $matches)) {
             $placeholder = $matches[0];
@@ -52,8 +62,25 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             $questiontext = substr_replace($questiontext, $input,
                     strpos($questiontext, $placeholder), strlen($placeholder));
         }
+        
+        $table = new html_table();
+        $table->data = array(
+                array('tekst zadatka', 'input za pisanje upita'),
+                array('upisivanje upita i ostatak'),
+                array('er dijagram')
+        );
+        
+        $answerattributes = array(
+            'type' => 'textarea',
+            'name' => 'sqlanswer',
+            'value' => $inputname,
+            'id' => 'sqlanswer',
+        );
 
         $result = html_writer::tag('div', $questiontext, array('class' => 'qtext'));
+        $result .= html_writer::empty_tag('input', $inputattributes );
+        //$result = html_writer::table($table);
+        
 
         /* if ($qa->get_state() == question_state::$invalid) {
             $result .= html_writer::nonempty_tag('div',

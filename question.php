@@ -37,6 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class qtype_sqlupiti_question extends question_graded_automatically_with_countback {
     
+    public $sqlanswer;
     public $server;
     public $username;
 
@@ -69,7 +70,7 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
 
     public function get_correct_response() {
         // TODO.
-        return array();
+        return array('sqlanswer' => (int) $this->sqlanswer);
     }
 
 

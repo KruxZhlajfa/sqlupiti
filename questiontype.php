@@ -86,14 +86,23 @@ class qtype_sqlupiti extends question_type {
         if ($options = $DB->get_record('question_sqlupiti', array('questionid' => $question->id))) {
             // No need to do anything, since the answer IDs won't have changed
             // But we'll do it anyway, just for robustness.
-            $options->server  = $server;
-            $options->username = $username;
+            $options->server  = $question->server;
+            $options->username = $question->username;
             $DB->update_record('question_sqlupiti', $options);
         } else {
             $options = new stdClass();
-            $options->question  = $question->id;
-            $options->server    = $server;
-            $options->username  = $username;
+            $options->questionid    = $question->id;
+            $options->sqlanswer     = $question->sqlanswer;
+            //if for saving editor field
+            /*if (empty($question->sqlanswer['text'])) {
+                $options->sqlanswer = '';
+            } else {
+                $options->sqlanswer = trim($question->sqlanswer['text']);
+            }*/
+            $options->server        = $question->server;
+            $options->username      = $question->username;
+            $options->password      = $question->password;
+            $options->dbname        = $question->dbname;
             $DB->insert_record('question_sqlupiti', $options);
         }
 		
@@ -101,16 +110,24 @@ class qtype_sqlupiti extends question_type {
 	//tu napravit da se snimi ono kaj se upiše u text box...
     }
     
-    /*public function get_question_options($question){
-        
-        
-        
-    }*/
+    public function get_question_options($question) {
+        global $DB, $OUTPUT;
+        // Get additional information from database
+        // and attach it to the question object.
+        if (!$question->options = $DB->get_record('question_sqlupiti',
+                array('questionid' => $question->id))) {
+            echo $OUTPUT->notification('Error: Missing question options!');
+            return false;
+        }
+
+        return true;
+    }
 
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         // TODO.
         parent::initialise_question_instance($question, $questiondata);
         $this->initialise_question_answers($question, $questiondata);
+        $question->sqlanswer = $questiondata->options->sqlanswer;
     }
 
     public function get_random_guess_score($questiondata) {
