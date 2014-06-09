@@ -44,14 +44,18 @@ class qtype_sqlupiti_edit_form extends question_edit_form {
         $mform->addElement('header','answers', get_string('answer', 'qtype_sqlupiti'));
 	$mform->setExpanded('answers');
         $mform->addElement('textarea', 'sqlanswer', get_string('sqlquery','qtype_sqlupiti'), $attributes);
-	$mform->setType('sqlanswer', PARAM_RAW);
+	$mform->setType('sqlanswer', PARAM_NOTAGS);
 	
 	$mform->addElement('header','databases', get_string('connect', 'qtype_sqlupiti'));
         $mform->setExpanded('databases');
 	$mform->addElement('text', 'server', get_string('conserver', 'qtype_sqlupiti'));
+        $mform->setType('server', PARAM_NOTAGS);
 	$mform->addElement('text', 'username', get_string('conuser', 'qtype_sqlupiti'));
+        $mform->setType('username', PARAM_NOTAGS);
 	$mform->addElement('text', 'password', get_string('conpass', 'qtype_sqlupiti'));
+        $mform->setType('password', PARAM_NOTAGS);
 	$mform->addElement('text', 'dbname', get_string('condbname', 'qtype_sqlupiti'));
+        $mform->setType('dbname', PARAM_NOTAGS);
         $mform->closeHeaderBefore('databases');
 	
 	$mform->addElement('header', 'picture', get_string('ermodel', 'qtype_sqlupiti'));

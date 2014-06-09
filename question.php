@@ -37,7 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class qtype_sqlupiti_question extends question_graded_automatically_with_countback {
     
-    public $sqlanswer;
+    public $sqlanswer = array();
     public $server;
     public $username;
 
@@ -49,6 +49,11 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
     public function summarise_response(array $response) {
         // TODO.
         return null;
+    }
+    
+    public function get_right_answer_summary() {
+        
+        return 'nekaj';
     }
 
     public function is_complete_response(array $response) {
@@ -70,7 +75,7 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
 
     public function get_correct_response() {
         // TODO.
-        return array('sqlanswer' => (int) $this->sqlanswer);
+        return array('sqlanswer' => $this->sqlanswer);
     }
 
 

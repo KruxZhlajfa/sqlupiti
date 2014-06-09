@@ -59,25 +59,34 @@ class qtype_sqlupiti extends question_type {
     public function save_question_options($question) {
 		
         global $DB;
+        
+        //$con = mysqli_connect($question->server, $question->username, $question->password, $question->dbname);
+
+        //mysqli_select_db($question->dbname);
+        
+        /*$sqlquery       = $question->sqlanswer;
+        $sqlanswer      = mysqli_query($con, $sqlquery);
+        $queryresult    = mysqli_fetch_row($sqlanswer);
 		
         $context = $question->context;
 	// Fetch old answer ids so that we can reuse them.
         $oldanswers = $DB->get_records('question_answers',
                     array('question' => $question->id), 'id ASC');
 		
-        /*$answer = $DB->get_record('question_answers', array('question' => $question->id));
-        //$answer = array_shift($oldanswers);
+        $answer = array_shift($oldanswers);
         if (!$answer) {
             $answer = new stdClass();
-            $answer->answer = '';
+            $answer->question = $question->id;
+            $answer->answer = $question->sqlanswer;
+            $answer->feedback = '';
             $answer->id = $DB->insert_record('question_answers', $answer);
         }
 		
-	$answer->answer = $question->username;
+	$answer->answer = $question->sqlanswer;
 		
-	$DB->update_record('question_answers', $answer);
+	$DB->update_record('question_answers', $answer);*/
         
-        $parentresult = parent::save_question_options($question);
+        /*$parentresult = parent::save_question_options($question);
         if ($parentresult !== null) {
             // Parent function returns null if all is OK.
             return $parentresult;
