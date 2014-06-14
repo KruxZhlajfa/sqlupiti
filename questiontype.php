@@ -42,7 +42,7 @@ require_once($CFG->dirroot . '/question/type/sqlupiti/question.php');
 class qtype_sqlupiti extends question_type {
     
     public function extra_question_fields() {
-        return array('question_sqlupiti', 'sqlanswer',
+        return array('qtype_sqlupiti_options', 'sqlanswer',
             'server', 'username', 'password', 'dbname');
     }
 
@@ -92,12 +92,12 @@ class qtype_sqlupiti extends question_type {
             return $parentresult;
         }*/
         
-        if ($options = $DB->get_record('question_sqlupiti', array('questionid' => $question->id))) {
+        if ($options = $DB->get_record('qtype_sqlupiti_options', array('questionid' => $question->id))) {
             // No need to do anything, since the answer IDs won't have changed
             // But we'll do it anyway, just for robustness.
             $options->server  = $question->server;
             $options->username = $question->username;
-            $DB->update_record('question_sqlupiti', $options);
+            $DB->update_record('qtype_sqlupiti_options', $options);
         } else {
             $options = new stdClass();
             $options->questionid    = $question->id;
@@ -112,7 +112,7 @@ class qtype_sqlupiti extends question_type {
             $options->username      = $question->username;
             $options->password      = $question->password;
             $options->dbname        = $question->dbname;
-            $DB->insert_record('question_sqlupiti', $options);
+            $DB->insert_record('qtype_sqlupiti_options', $options);
         }
 		
         $this->save_hints($question);
@@ -123,7 +123,7 @@ class qtype_sqlupiti extends question_type {
         global $DB, $OUTPUT;
         // Get additional information from database
         // and attach it to the question object.
-        if (!$question->options = $DB->get_record('question_sqlupiti',
+        if (!$question->options = $DB->get_record('qtype_sqlupiti_options',
                 array('questionid' => $question->id))) {
             echo $OUTPUT->notification('Error: Missing question options!');
             return false;

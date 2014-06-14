@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qtype_sqlupiti';
-$plugin->version   = 2014051901;
+$plugin->version   = 2014061402;
 
 $plugin->requires  = 2012062504;
 

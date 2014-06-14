@@ -32,6 +32,18 @@ function xmldb_qtype_sqlupiti_upgrade($oldversion = 0) {
         // Sqlupiti savepoint reached.
         upgrade_plugin_savepoint(true, 2014051901, 'qtype', 'sqlupiti');
     }
+    
+    if ($oldversion < 2014061402) {
+
+        // Define table question_sqlupiti to be renamed to qtype_sqlupiti_options.
+        $table = new xmldb_table('question_sqlupiti');
+
+        // Launch rename table for question_sqlupiti.
+        $dbman->rename_table($table, 'qtype_sqlupiti_options');
+
+        // Sqlupiti savepoint reached.
+        upgrade_plugin_savepoint(true, 2014061402, 'qtype', 'sqlupiti');
+    }
 
     return $result;
 }

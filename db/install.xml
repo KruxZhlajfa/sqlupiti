@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="question/type/sqlupiti/db" VERSION="20140514" COMMENT="XMLDB file for Moodle question/type/sqlupiti"
+<XMLDB PATH="question/type/sqlupiti/db" VERSION="20140614" COMMENT="XMLDB file for Moodle question/type/sqlupiti"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
