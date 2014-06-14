@@ -40,15 +40,15 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             question_display_options $options) {
 
         $question = $qa->get_question();
-        $currentanswer = $qa->get_last_qt_var('sqlanswer');
+        $currentanswer = $qa->get_last_qt_var('answer');
 
         $questiontext = $question->format_questiontext($qa);
         $inputname = $qa->get_qt_field_name('sqlanswer');
         
-        $inputattributes = array(
-            'type' => 'textarea',
+        $textareaattributes = array(
+            'rows' => '3',
+            'cols' => '50',
             'name' => $inputname,
-            'value' => $currentanswer,
             'id' => $inputname,
         );
         
@@ -63,23 +63,18 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                     strpos($questiontext, $placeholder), strlen($placeholder));
         }
         
-        $table = new html_table();
-        $table->data = array(
-                array('tekst zadatka', 'input za pisanje upita'),
-                array('upisivanje upita i ostatak'),
-                array('er dijagram')
-        );
-        
-        $answerattributes = array(
-            'type' => 'textarea',
-            'name' => 'sqlanswer',
-            'value' => $inputname,
-            'id' => 'sqlanswer',
-        );
-
-        $result = html_writer::tag('div', $questiontext, array('class' => 'qtext'));
-        $result .= html_writer::empty_tag('input', $inputattributes );
-        //$result = html_writer::table($table);
+        $result = html_writer::start_tag('table');
+        $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext);
+        $result .= html_writer::start_tag('td', array('rowspan' => '3')) . 'tu ide output od upisanog query-a' 
+                    . html_writer::end_tag('td') . html_writer::end_tag('tr');
+        $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::start_tag('table') . html_writer::start_tag('tr')
+                    . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes) . html_writer::end_tag('td') 
+                    . html_writer::start_tag('td') . 'slika za kvaèicu/x' . html_writer::end_tag('td');
+        $result .= html_writer::end_tag('tr') . html_writer::start_tag('tr') . html_writer::start_tag('td') . 'button go' 
+                    . html_writer::end_tag('td') . html_writer::end_tag('td') . html_writer::end_tag('table')
+                    . html_writer::end_tag('td') . html_writer::end_tag('tr');
+        $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . 'slika za er dijagram'
+                . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table');
         
 
         /* if ($qa->get_state() == question_state::$invalid) {

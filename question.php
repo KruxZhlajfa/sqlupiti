@@ -51,10 +51,9 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
         return null;
     }
     
-    public function get_right_answer_summary() {
-        
-        return 'nekaj';
-    }
+    /*public function get_right_answer_summary() {
+        return array('answer' => $this->sqlanswer);
+    }*/
 
     public function is_complete_response(array $response) {
         // TODO.

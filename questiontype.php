@@ -42,7 +42,7 @@ require_once($CFG->dirroot . '/question/type/sqlupiti/question.php');
 class qtype_sqlupiti extends question_type {
     
     public function extra_question_fields() {
-        return array('question_sqlupiti', 'id', 'questionid', 'sqlanswer',
+        return array('question_sqlupiti', 'sqlanswer',
             'server', 'username', 'password', 'dbname');
     }
 

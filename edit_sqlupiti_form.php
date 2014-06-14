@@ -60,11 +60,6 @@ class qtype_sqlupiti_edit_form extends question_edit_form {
 	
 	$mform->addElement('header', 'picture', get_string('ermodel', 'qtype_sqlupiti'));
 	$mform->addElement('filepicker', 'ERmodel', get_string('ermodel', 'qtype_sqlupiti'));
-                
-                
-		
-		
-		//$this->add_interactive_settings();
     }
 
     protected function data_preprocessing($question) {
