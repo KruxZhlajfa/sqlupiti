@@ -42,8 +42,7 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
     public $username;
 
     public function get_expected_data() {
-        // TODO.
-        return array();
+        return array('answer' => PARAM_NOTAGS);
     }
 
     public function summarise_response(array $response) {

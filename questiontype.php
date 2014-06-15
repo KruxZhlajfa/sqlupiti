@@ -60,14 +60,6 @@ class qtype_sqlupiti extends question_type {
 		
         global $DB;
         
-        //$con = mysqli_connect($question->server, $question->username, $question->password, $question->dbname);
-
-        //mysqli_select_db($question->dbname);
-        
-        /*$sqlquery       = $question->sqlanswer;
-        $sqlanswer      = mysqli_query($con, $sqlquery);
-        $queryresult    = mysqli_fetch_row($sqlanswer);
-		
         $context = $question->context;
 	// Fetch old answer ids so that we can reuse them.
         $oldanswers = $DB->get_records('question_answers',
@@ -84,7 +76,7 @@ class qtype_sqlupiti extends question_type {
 		
 	$answer->answer = $question->sqlanswer;
 		
-	$DB->update_record('question_answers', $answer);*/
+	$DB->update_record('question_answers', $answer);
         
         /*$parentresult = parent::save_question_options($question);
         if ($parentresult !== null) {

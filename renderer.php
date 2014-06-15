@@ -43,7 +43,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         $currentanswer = $qa->get_last_qt_var('answer');
 
         $questiontext = $question->format_questiontext($qa);
-        $inputname = $qa->get_qt_field_name('sqlanswer');
+        $inputname = $qa->get_qt_field_name('answer');
         
         $textareaattributes = array(
             'rows' => '3',
@@ -52,11 +52,37 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             'id' => $inputname,
         );
         
+        $mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
+        
+        $sqlquery = $question->sqlanswer;
+        
+        $query_result = $mysqli->query($sqlquery);
+        
+        if ($query_result){
+            $rows = $query_result->fetch_all();
+            $table = new html_table();
+            $head = array();
+            $data = array();
+            $colnum = mysqli_num_fields($query_result);
+            for ($i=0; $i < $colnum; $i++){
+                array_push($head, $query_result->fetch_field()->name);
+            }
+            foreach ($rows as $key => $value){
+                array_push($data, $value);
+            }
+            $table->head = $head;
+            $table->data = $data;
+            $query_result->close();
+        }
+        
+        if ($options->readonly) {
+            $textareaattributes['readonly'] = 'readonly';
+        }
+        
         $placeholder = false;
         if (preg_match('/_____+/', $questiontext, $matches)) {
             $placeholder = $matches[0];
         }
-        $input = '**subq controls go in here**';
 
         if ($placeholder) {
             $questiontext = substr_replace($questiontext, $input,
@@ -65,7 +91,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         
         $result = html_writer::start_tag('table');
         $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext);
-        $result .= html_writer::start_tag('td', array('rowspan' => '3')) . 'tu ide output od upisanog query-a' 
+        $result .= html_writer::start_tag('td', array('rowspan' => '3')) . html_writer::table($table)
                     . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::start_tag('table') . html_writer::start_tag('tr')
                     . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes) . html_writer::end_tag('td') 
