@@ -39,7 +39,7 @@ class qtype_sqlupiti_edit_form extends question_edit_form {
 
     protected function definition_inner($mform) {
         
-        $attributes='rows="6" cols="175"';
+        $attributes = 'rows="6" cols="175"';
 		
         $mform->addElement('header','answers', get_string('answer', 'qtype_sqlupiti'));
 	$mform->setExpanded('answers');
@@ -59,12 +59,22 @@ class qtype_sqlupiti_edit_form extends question_edit_form {
         $mform->closeHeaderBefore('databases');
 	
 	$mform->addElement('header', 'picture', get_string('ermodel', 'qtype_sqlupiti'));
-	$mform->addElement('filepicker', 'ERmodel', get_string('ermodel', 'qtype_sqlupiti'));
+        $mform->addElement('filemanager', 'ermodel', get_string('ermodel', 'qtype_sqlupiti'), null,
+                    array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('image')));
+        
     }
 
     protected function data_preprocessing($question) {
         $question = parent::data_preprocessing($question);
         $question = $this->data_preprocessing_hints($question);
+        
+        // Initialise file manager for ermodel.
+        $draftitemid = file_get_submitted_draft_itemid('ermodel');
+
+        file_prepare_draft_area($draftitemid, $this->context->id, 'qtype_sqlupiti',
+                                'ermodel', !empty($question->id) ? (int) $question->id : null,
+                                 array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('image')));
+        $question->ermodel = $draftitemid;
 
         return $question;
     }

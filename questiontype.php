@@ -87,28 +87,28 @@ class qtype_sqlupiti extends question_type {
         if ($options = $DB->get_record('qtype_sqlupiti_options', array('questionid' => $question->id))) {
             // No need to do anything, since the answer IDs won't have changed
             // But we'll do it anyway, just for robustness.
-            $options->server  = $question->server;
-            $options->username = $question->username;
+            $options->sqlanswer = $question->sqlanswer;
+            $options->server    = $question->server;
+            $options->username  = $question->username;
+            $options->password  = $question->password;
+            $options->dbname    = $question->dbname;
             $DB->update_record('qtype_sqlupiti_options', $options);
         } else {
             $options = new stdClass();
             $options->questionid    = $question->id;
             $options->sqlanswer     = $question->sqlanswer;
-            //if for saving editor field
-            /*if (empty($question->sqlanswer['text'])) {
-                $options->sqlanswer = '';
-            } else {
-                $options->sqlanswer = trim($question->sqlanswer['text']);
-            }*/
             $options->server        = $question->server;
             $options->username      = $question->username;
             $options->password      = $question->password;
             $options->dbname        = $question->dbname;
             $DB->insert_record('qtype_sqlupiti_options', $options);
         }
+        
+        file_save_draft_area_files($question->ermodel, $question->context->id,
+                                    'qtype_sqlupiti', 'ermodel', $question->id,
+                                    array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('image')));
 		
         $this->save_hints($question);
-	//tu napravit da se snimi ono kaj se upiše u text box...
     }
     
     public function get_question_options($question) {
