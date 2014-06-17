@@ -23,20 +23,20 @@
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['answer'] = 'SQL query';
-$string['connect'] = 'Connection to database';
-$string['conserver'] = 'Server where the database is';
-$string['conuser'] = 'Username for server';
-$string['conpass'] = 'Password for server';
-$string['condbname'] = 'Database name';
+$string['answer'] = 'SQL upit';
+$string['connect'] = 'Podaci za povezivanje';
+$string['conserver'] = 'Server za spajanje na bazu';
+$string['conuser'] = 'Username za server';
+$string['conpass'] = 'Password za server';
+$string['condbname'] = 'Ime baze';
 $string['ermodel'] = 'ER model';
-$string['pluginname'] = 'SQL query';
+$string['pluginname'] = 'SQL upit';
 $string['pluginname_help'] = 'Dodavanje novog pitanja za SQL upit. Dodaje se naziv pitanja, tekst pitanja te njegovo rješenje u obliku SQL upita. Potrebno je navesti i podatke
 za povezivanje (server, username, password i ime baze) i upload slike za ER dijagram koji se prikaže kod studenta na pitanju.';
 $string['pluginname_link'] = 'question/type/sqlupiti';
-$string['pluginnameadding'] = 'Adding question for SQL query';
-$string['pluginnameediting'] = 'Editing question for SQL query';
-$string['pluginnamesummary'] = 'Some description';
-$string['sqlquery'] = 'The right SQL query for the question';
+$string['pluginnameadding'] = 'Dodavanje pitanja za SQL upit';
+$string['pluginnameediting'] = 'Uređivanje pitanja za SQL upit';
+$string['pluginnamesummary'] = 'Napiši neki opis';
+$string['sqlquery'] = 'To�an SQL upit';
 $string['dropbackground'] = 'Background image for dragging markers onto';
 

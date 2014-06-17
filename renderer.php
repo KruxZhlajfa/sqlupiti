@@ -83,27 +83,9 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             $output = '';
         }
         
-        $fs = get_file_storage();
- 
-        // Prepare file record object
-        $fileinfo = array(
-            'component' => 'qtype_sqlupiti',     // usually = table name
-            'filearea' => 'ermodel',     // usually = table name
-            'itemid' => '609832764',               // usually = ID of row in table
-            'contextid' => '22', // ID of context
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => 'ellie_with_bow_24238.png'); // any filename
- 
-        // Get file
-        $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
- 
-        // Read contents
-        if ($file) {
-            $contents = $file->get_content();
-        } else {
-            $contents = 'nema slike';
-        }
+        $ermodel = self::get_url_for_image($qa, 'ermodel');
+        
+        $img = html_writer::tag('img', '', array('src'=>$ermodel, 'class'=>'ermodelimg', 'alt'=>'nekitekst'));
         
         if ($options->readonly) {
             $textareaattributes['readonly'] = 'readonly';
@@ -129,7 +111,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         $result .= html_writer::end_tag('tr') . html_writer::start_tag('tr') . html_writer::start_tag('td') . 'button go' 
                     . html_writer::end_tag('td') . html_writer::end_tag('td') . html_writer::end_tag('table')
                     . html_writer::end_tag('td') . html_writer::end_tag('tr');
-        $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . $contents
+        $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . $img
                 . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table');
         
 
@@ -139,6 +121,31 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                     array('class' => 'validationerror'));
         }*/
         return $result;
+    }
+    
+    protected static function get_url_for_image(question_attempt $qa, $filearea, $itemid = 0) {
+        $question = $qa->get_question();
+        $qubaid = $qa->get_usage_id();
+        $slot = $qa->get_slot();
+        $fs = get_file_storage();
+        if ($filearea == 'ermodel') {
+            $itemid = $question->id;
+        }
+        $componentname = $question->qtype->plugin_name();
+        $draftfiles = $fs->get_area_files($question->contextid, $componentname,
+                                                                        $filearea, $itemid, 'id');
+        if ($draftfiles) {
+            foreach ($draftfiles as $file) {
+                if ($file->is_directory()) {
+                    continue;
+                }
+                $url = moodle_url::make_pluginfile_url($question->contextid, $componentname,
+                                            $filearea, "$slot/$qubaid/{$itemid}", '/',
+                                            $file->get_filename());
+                return $url->out();
+            }
+        }
+        return null;
     }
 
     public function specific_feedback(question_attempt $qa) {
