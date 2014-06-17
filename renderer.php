@@ -52,7 +52,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             'id' => $inputname,
         );
         
-        $outputattributes = array('style'=>'overflow:auto; max-height:400px;');
+        $outputattributes = array('style'=>'overflow:auto; max-height:400px; vertical-align:top;');
         
         if (!empty($currentanswer)){
             $mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
@@ -78,16 +78,34 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                 $query_result->close();
                 $output = html_writer::table($table);
             }else{
-                $output = $mysqli->error;
+                $output = 'ERROR:' . '<br>' . $mysqli->error;
             }
             
         }else{
             $output = '';
         }
         
-        $ermodel = self::get_url_for_image($qa, 'ermodel');
+        $qubaid = $qa->get_usage_id();
+        $slot = $qa->get_slot();
+        $fs = get_file_storage();
         
-        $img = html_writer::tag('img', '', array('src'=>$ermodel, 'class'=>'ermodelimg', 'alt'=>'nekitekst'));
+        $draftfiles = $fs->get_area_files($question->contextid, 'qtype_sqlupiti', 'ermodel', $question->id, 'id');
+        
+        if ($draftfiles) {
+            foreach ($draftfiles as $file) {
+                if ($file->is_directory()) {
+                    continue;
+                }
+                $url = moodle_url::make_pluginfile_url($question->contextid, 'qtype_sqlupiti',
+                                            'ermodel', "$qubaid/$slot/{$question->id}", '/',
+                                            $file->get_filename());
+            }
+            $img = html_writer::tag('img', '', array('src'=>$url->out(), 'class'=>'ermodelimg', 'style'=>'max-height: 400px; max-width: 600px;'));
+        }else{
+            $img = '';
+        }
+        
+        
         
         if ($options->readonly) {
             $textareaattributes['readonly'] = 'readonly';
@@ -105,7 +123,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         
         $result = html_writer::start_tag('table');
         $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext);
-        $result .= html_writer::start_tag('td', array('rowspan' => '3')) . html_writer::start_tag('div', $outputattributes) . $output
+        $result .= html_writer::start_tag('td', array('rowspan' => '3', 'style'=>'vertical-align:top;')) . html_writer::start_tag('div', $outputattributes) . $output
                     . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::start_tag('table') . html_writer::start_tag('tr')
                     . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes) . html_writer::end_tag('td') 
@@ -123,33 +141,6 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                     array('class' => 'validationerror'));
         }*/
         return $result;
-    }
-    
-    protected static function get_url_for_image(question_attempt $qa, $filearea, $itemid = 0) {
-        $question = $qa->get_question();
-        $qubaid = $qa->get_usage_id();
-        $slot = $qa->get_slot();
-        $fs = get_file_storage();
-        if ($filearea == 'ermodel') {
-            $itemid = $question->id;
-        }
-        
-        $componentname = $question->qtype->plugin_name();
-        $draftfiles = $fs->get_area_files($question->contextid, $componentname,
-                                                                        $filearea, $itemid, 'id');
-        if ($draftfiles) {
-            foreach ($draftfiles as $file) {
-                if ($file->is_directory()) {
-                    continue;
-                }
-                $url = moodle_url::make_pluginfile_url($question->contextid, $componentname,
-                                            $filearea, $itemid, '/',
-                                            $file->get_filename());
-                
-                return $url->out();
-            }
-        }
-        return null;
     }
 
     public function specific_feedback(question_attempt $qa) {

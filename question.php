@@ -80,12 +80,18 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
     public function check_file_access($qa, $options, $component, $filearea,
             $args, $forcedownload) {
         // TODO.
-        if ($component == 'question' && $filearea == 'hint') {
+        /*if ($component == 'question' && $filearea == 'hint') {
             return $this->check_hint_file_access($qa, $options, $args);
 
         } else {
             return parent::check_file_access($qa, $options, $component, $filearea,
                     $args, $forcedownload);
+        }*/
+        //access to image of ER model
+        if ($component == 'qtype_sqlupiti' && $filearea == 'ermodel') {
+            $question = $qa->get_question();
+            $itemid = reset($args);
+            return $itemid == $question->id;
         }
     }
 

@@ -1,0 +1,5 @@
+- Treba riješit ocjenjivanje studenta, tj. da se zna kad je toèno rješenje.
+- izbrisat sliku dok se izbriše pitanje
+- dodat tipku "kreni"
+- dodat feedback, tj. kvaèicu i X
+- uljepšat dok se review-a attempt
