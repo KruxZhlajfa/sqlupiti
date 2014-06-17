@@ -106,7 +106,7 @@ class qtype_sqlupiti extends question_type {
         
         file_save_draft_area_files($question->ermodel, $question->context->id,
                                     'qtype_sqlupiti', 'ermodel', $question->id,
-                                    array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('web_image')));
+                                    array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('image')));
 		
         $this->save_hints($question);
     }

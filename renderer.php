@@ -52,6 +52,8 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             'id' => $inputname,
         );
         
+        $outputattributes = array('style'=>'overflow:auto; max-height:400px;');
+        
         if (!empty($currentanswer)){
             $mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
         
@@ -103,8 +105,8 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         
         $result = html_writer::start_tag('table');
         $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext);
-        $result .= html_writer::start_tag('td', array('rowspan' => '3')) . $output
-                    . html_writer::end_tag('td') . html_writer::end_tag('tr');
+        $result .= html_writer::start_tag('td', array('rowspan' => '3')) . html_writer::start_tag('div', $outputattributes) . $output
+                    . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::start_tag('table') . html_writer::start_tag('tr')
                     . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes) . html_writer::end_tag('td') 
                     . html_writer::start_tag('td') . 'slika za kvaèicu/x' . html_writer::end_tag('td');
@@ -131,6 +133,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         if ($filearea == 'ermodel') {
             $itemid = $question->id;
         }
+        
         $componentname = $question->qtype->plugin_name();
         $draftfiles = $fs->get_area_files($question->contextid, $componentname,
                                                                         $filearea, $itemid, 'id');
@@ -140,8 +143,9 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                     continue;
                 }
                 $url = moodle_url::make_pluginfile_url($question->contextid, $componentname,
-                                            $filearea, "$slot/$qubaid/{$itemid}", '/',
+                                            $filearea, $itemid, '/',
                                             $file->get_filename());
+                
                 return $url->out();
             }
         }
