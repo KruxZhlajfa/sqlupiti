@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,10 +24,7 @@
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Generates the output for sqlupiti questions.
@@ -36,110 +34,126 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_sqlupiti_renderer extends qtype_renderer {
-    public function formulation_and_controls(question_attempt $qa,
-            question_display_options $options) {
+
+    public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
 
         $question = $qa->get_question();
         $currentanswer = $qa->get_last_qt_var('answer');
 
         $questiontext = $question->format_questiontext($qa);
         $inputname = $qa->get_qt_field_name('answer');
-        
+
         $textareaattributes = array(
-            'rows' => '3',
-            'cols' => '50',
+            'rows' => '5',
+            'cols' => '80',
             'name' => $inputname,
-            'id' => $inputname,
+            'id' => $inputname
         );
+
+        $button = array(
+            'type' => 'submit',
+            'value' => get_string('runquery', 'qtype_sqlupiti')
+        );
+
+        $outputattributes = array('style' => 'overflow:auto; max-height:400px; vertical-align:top;');
         
-        $outputattributes = array('style'=>'overflow:auto; max-height:400px; vertical-align:top;');
-        
-        if (!empty($currentanswer)){
+        $feedbackimg = '';
+        if ($options->correctness) {
+            if ($qa->get_fraction()) {
+                $fraction = 1;
+            } else {
+                $fraction = 0;
+            }
+            $textareaattributes['class'] = $this->feedback_class($fraction);
+            $feedbackimg = $this->feedback_image($fraction);
+        }
+
+        if (!empty($currentanswer)) {
             $mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
-        
+
             $sqlquery = $currentanswer;
-        
+
             $query_result = $mysqli->query($sqlquery);
-        
-            if ($query_result){
+            
+            $row_cnt = $query_result->num_rows;
+
+            if ($query_result) {
                 $rows = $query_result->fetch_all();
                 $table = new html_table();
                 $head = array();
                 $data = array();
                 $colnum = mysqli_num_fields($query_result);
-                for ($i=0; $i < $colnum; $i++){
+                for ($i = 0; $i < $colnum; $i++) {
                     array_push($head, $query_result->fetch_field()->name);
                 }
-                foreach ($rows as $value){
+                foreach ($rows as $value) {
                     array_push($data, $value);
                 }
                 $table->head = $head;
                 $table->data = $data;
                 $query_result->close();
-                $output = html_writer::table($table);
-            }else{
+                $output = get_string('numofrows', 'qtype_sqlupiti') . '<b>' .  $row_cnt . '</b>' . '<br>'; 
+                $output .= html_writer::table($table);
+            } else {
                 $output = 'ERROR:' . '<br>' . $mysqli->error;
             }
-            
-        }else{
+        } else {
             $output = '';
         }
-        
+
         $qubaid = $qa->get_usage_id();
         $slot = $qa->get_slot();
         $fs = get_file_storage();
-        
+
         $draftfiles = $fs->get_area_files($question->contextid, 'qtype_sqlupiti', 'ermodel', $question->id, 'id');
-        
+
         if ($draftfiles) {
             foreach ($draftfiles as $file) {
                 if ($file->is_directory()) {
                     continue;
                 }
-                $url = moodle_url::make_pluginfile_url($question->contextid, 'qtype_sqlupiti',
-                                            'ermodel', "$qubaid/$slot/{$question->id}", '/',
-                                            $file->get_filename());
+                $url = moodle_url::make_pluginfile_url($question->contextid, 'qtype_sqlupiti', 'ermodel', "$qubaid/$slot/{$question->id}", '/', $file->get_filename());
             }
-            $img = html_writer::tag('img', '', array('src'=>$url->out(), 'class'=>'ermodelimg', 'style'=>'max-height: 400px; max-width: 600px;'));
-        }else{
+            $img = html_writer::tag('img', '', array('src' => $url->out(), 'class' => 'ermodelimg', 'style' => 'max-height: 400px; max-width: 600px;'));
+        } else {
             $img = '';
         }
-        
-        
-        
+
+
+
         if ($options->readonly) {
             $textareaattributes['readonly'] = 'readonly';
         }
-        
+
         $placeholder = false;
         if (preg_match('/_____+/', $questiontext, $matches)) {
             $placeholder = $matches[0];
         }
 
         if ($placeholder) {
-            $questiontext = substr_replace($questiontext, $input,
-                    strpos($questiontext, $placeholder), strlen($placeholder));
+            $questiontext = substr_replace($questiontext, $input, strpos($questiontext, $placeholder), strlen($placeholder));
         }
-        
+
         $result = html_writer::start_tag('table');
         $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext);
-        $result .= html_writer::start_tag('td', array('rowspan' => '3', 'style'=>'vertical-align:top;')) . html_writer::start_tag('div', $outputattributes) . $output
-                    . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr');
+        $result .= html_writer::start_tag('td', array('rowspan' => '3', 'style' => 'vertical-align:top;')) 
+                . html_writer::start_tag('div', $outputattributes) . $output
+                . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::start_tag('table') . html_writer::start_tag('tr')
-                    . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes) . html_writer::end_tag('td') 
-                    . html_writer::start_tag('td') . 'slika za kvaèicu/x' . html_writer::end_tag('td');
-        $result .= html_writer::end_tag('tr') . html_writer::start_tag('tr') . html_writer::start_tag('td') . 'button go' 
-                    . html_writer::end_tag('td') . html_writer::end_tag('td') . html_writer::end_tag('table')
-                    . html_writer::end_tag('td') . html_writer::end_tag('tr');
+                . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes) 
+                . html_writer::end_tag('td') . html_writer::start_tag('td') . $feedbackimg . html_writer::end_tag('td');
+        $result .= html_writer::end_tag('tr') . html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::tag('input', '', $button)
+                . html_writer::end_tag('td') . html_writer::end_tag('td') . html_writer::end_tag('table')
+                . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . $img
                 . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table');
-        
+
 
         /* if ($qa->get_state() == question_state::$invalid) {
-            $result .= html_writer::nonempty_tag('div',
-                    $question->get_validation_error(array('answer' => $currentanswer)),
-                    array('class' => 'validationerror'));
-        }*/
+          $result .= html_writer::nonempty_tag('div',
+          $question->get_validation_error(array('answer' => $currentanswer)),
+          array('class' => 'validationerror'));
+          } */
         return $result;
     }
 
@@ -152,4 +166,5 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         // TODO.
         return '';
     }
+
 }

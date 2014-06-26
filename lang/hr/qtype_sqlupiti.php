@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -38,5 +39,7 @@ $string['pluginnameadding'] = 'Dodavanje pitanja za SQL upit';
 $string['pluginnameediting'] = 'Uređivanje pitanja za SQL upit';
 $string['pluginnamesummary'] = 'Napiši neki opis';
 $string['sqlquery'] = 'To�an SQL upit';
-$string['dropbackground'] = 'Background image for dragging markers onto';
+$string['runquery'] = 'Pokreni upit';
+$string['numofrows'] = 'Broj redaka: ';
+$string['pleaseenterquery'] = 'Molim unesite upit za pokretanje!';
 

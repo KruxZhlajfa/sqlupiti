@@ -38,5 +38,6 @@ $string['pluginnameadding'] = 'Adding question for SQL query';
 $string['pluginnameediting'] = 'Editing question for SQL query';
 $string['pluginnamesummary'] = 'Some description';
 $string['sqlquery'] = 'The right SQL query for the question';
-$string['dropbackground'] = 'Background image for dragging markers onto';
-
+$string['runquery'] = 'Run query';
+$string['numofrows'] = 'Number of rows: ';
+$string['pleaseenterquery'] = 'Please enter a query to run!';

@@ -1,5 +1,3 @@
-- Treba riješit ocjenjivanje studenta, tj. da se zna kad je toèno rješenje.
+- Treba riješit ocjenjivanje studenta, tj. da se zna kad je toèno rješenje. (istestirat nekak)
 - izbrisat sliku dok se izbriše pitanje
-- dodat tipku "kreni"
-- dodat feedback, tj. kvaèicu i X
-- uljepšat dok se review-a attempt
+- riješit hrvatska slova
