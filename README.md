@@ -7,7 +7,7 @@ A simple question type template.
 
 * SQL query is a question type in which students can write SQL queries and it's correctness is determined. 
 * The correctness is determined with the SQL query that the teacher has entered for that question. 
-* The correctness doesn't depend on "ORDER BY", or the order of the result doesn't matter.
+* The correctness doesn't depend on "ORDER BY", i.e. the order of the result doesn't matter.
 
 
 ###Installation
