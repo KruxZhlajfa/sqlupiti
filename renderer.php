@@ -56,14 +56,11 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         );
 
         $outputattributes = array('style' => 'overflow:auto; max-height:400px; vertical-align:top;');
-        
+
+        //Work out visuals for correctness of question
         $feedbackimg = '';
         if ($options->correctness) {
-            if ($qa->get_fraction()) {
-                $fraction = 1;
-            } else {
-                $fraction = 0;
-            }
+            list($fraction, ) = $question->grade_response(array('answer' => $currentanswer));
             $textareaattributes['class'] = $this->feedback_class($fraction);
             $feedbackimg = $this->feedback_image($fraction);
         }
@@ -74,7 +71,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             $sqlquery = $currentanswer;
 
             $query_result = $mysqli->query($sqlquery);
-            
+
             $row_cnt = $query_result->num_rows;
 
             if ($query_result) {
@@ -92,7 +89,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                 $table->head = $head;
                 $table->data = $data;
                 $query_result->close();
-                $output = get_string('numofrows', 'qtype_sqlupiti') . '<b>' .  $row_cnt . '</b>' . '<br>'; 
+                $output = get_string('numofrows', 'qtype_sqlupiti') . '<b>' . $row_cnt . '</b>' . '<br>';
                 $output .= html_writer::table($table);
             } else {
                 $output = 'ERROR:' . '<br>' . $mysqli->error;
@@ -119,8 +116,6 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             $img = '';
         }
 
-
-
         if ($options->readonly) {
             $textareaattributes['readonly'] = 'readonly';
         }
@@ -136,11 +131,11 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
 
         $result = html_writer::start_tag('table');
         $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext);
-        $result .= html_writer::start_tag('td', array('rowspan' => '3', 'style' => 'vertical-align:top;')) 
+        $result .= html_writer::start_tag('td', array('rowspan' => '3', 'style' => 'vertical-align:top;'))
                 . html_writer::start_tag('div', $outputattributes) . $output
                 . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::start_tag('table') . html_writer::start_tag('tr')
-                . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes) 
+                . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes)
                 . html_writer::end_tag('td') . html_writer::start_tag('td') . $feedbackimg . html_writer::end_tag('td');
         $result .= html_writer::end_tag('tr') . html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::tag('input', '', $button)
                 . html_writer::end_tag('td') . html_writer::end_tag('td') . html_writer::end_tag('table')
@@ -149,22 +144,42 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                 . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table');
 
 
-        /* if ($qa->get_state() == question_state::$invalid) {
-          $result .= html_writer::nonempty_tag('div',
-          $question->get_validation_error(array('answer' => $currentanswer)),
-          array('class' => 'validationerror'));
-          } */
+        if ($qa->get_state() == question_state::$invalid) {
+            $result .= html_writer::nonempty_tag('div', $question->get_validation_error(array('answer' => $currentanswer)), array('class' => 'validationerror'));
+        }
         return $result;
     }
 
     public function specific_feedback(question_attempt $qa) {
-        // TODO.
-        return '';
+        $question = $qa->get_question();
+        $response = $qa->get_last_qt_var('answer');
+
+        if ($response) {
+            $mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
+
+            $correct_query = $question->sqlanswer;
+            $correct_result = $mysqli->query($correct_query);
+            $correct_row_cnt = $correct_result->num_rows;
+
+            $student_query = $response;
+            $student_result = $mysqli->query($student_query);
+            $student_row_cnt = $student_result->num_rows;
+
+            if ($correct_row_cnt < $student_row_cnt) {
+                return get_string('correctlower', 'qtype_sqlupiti', $correct_row_cnt);
+            } else if ($correct_row_cnt == $student_row_cnt) {
+                return '';
+            } else {
+                return get_string('correcthigher', 'qtype_sqlupiti', $correct_row_cnt);
+            }
+        } else {
+            return '';
+        }
     }
 
     public function correct_response(question_attempt $qa) {
-        // TODO.
-        return '';
+        $question = $qa->get_question();
+        return get_string('correctanswer', 'qtype_sqlupiti') . '<b>' . $question->sqlanswer. '</b>';
     }
 
 }

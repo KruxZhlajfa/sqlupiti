@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 // This file is part of Moodle - http://moodle.org/
 //
@@ -27,19 +27,28 @@
 $string['answer'] = 'SQL upit';
 $string['connect'] = 'Podaci za povezivanje';
 $string['conserver'] = 'Server za spajanje na bazu';
-$string['conuser'] = 'Username za server';
-$string['conpass'] = 'Password za server';
+$string['conuser'] = 'Korisničko ime za server';
+$string['conpass'] = 'Lozinka za server';
 $string['condbname'] = 'Ime baze';
 $string['ermodel'] = 'ER model';
 $string['pluginname'] = 'SQL upit';
-$string['pluginname_help'] = 'Dodavanje novog pitanja za SQL upit. Dodaje se naziv pitanja, tekst pitanja te njegovo rješenje u obliku SQL upita. Potrebno je navesti i podatke
-za povezivanje (server, username, password i ime baze) i upload slike za ER dijagram koji se prikaže kod studenta na pitanju.';
+$string['pluginname_help'] = 'Dodaje se naziv pitanja, tekst pitanja te njegovo rješenje u obliku SQL upita (obavezno upisati). '
+        . 'Potrebno je navesti i podatke za povezivanje (server, korisničko ime, lozinku i ime baze, ti ovi podaci su obavezni za uspisivanje) '
+        . 'i upload slike za ER dijagram koji se prikaže kod studenta na pitanju.';
 $string['pluginname_link'] = 'question/type/sqlupiti';
 $string['pluginnameadding'] = 'Dodavanje pitanja za SQL upit';
 $string['pluginnameediting'] = 'Uređivanje pitanja za SQL upit';
-$string['pluginnamesummary'] = 'Napiši neki opis';
-$string['sqlquery'] = 'To�an SQL upit';
+$string['pluginnamesummary'] = 'SQL upit je tip pitanja u kojem studenti mogu upisivati SQL upite i provjerava se njihova točnost. '
+        . 'Točnost se provjerava na osnovu već upisanog točnog upita od strane profesora. Ne ovisi od "ORDER BY", tj. o redoslijedu ispisa upita.';
+$string['sqlquery'] = 'Točan SQL upit';
 $string['runquery'] = 'Pokreni upit';
 $string['numofrows'] = 'Broj redaka: ';
 $string['pleaseenterquery'] = 'Molim unesite upit za pokretanje!';
-
+$string['correctanswer'] = 'Točan SQL upit je: ';
+$string['correctlower'] = 'Točno rješnje ima manje redaka. Rješenje ima {$a} redaka.';
+$string['correcthigher'] = 'Točno rješenje ima više redaka. Rješenje ima {$a} redaka.';
+$string['missinganswer'] = 'Točan SQL upit je obavezan!';
+$string['missingserver'] = 'Ime servera je obavezno!';
+$string['missinguser'] = 'Korisničko ime je obavezno!';
+$string['missingpass'] = 'Lozinka je obavezna!';
+$string['missingdbname'] = 'Ime baze podataka je obavezna';

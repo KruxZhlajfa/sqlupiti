@@ -1,3 +1,0 @@
-- Treba riješit ocjenjivanje studenta, tj. da se zna kad je toèno rješenje. (istestirat nekak)
-- izbrisat sliku dok se izbriše pitanje
-- riješit hrvatska slova

@@ -38,24 +38,28 @@ defined('MOODLE_INTERNAL') || die();
 class qtype_sqlupiti_edit_form extends question_edit_form {
 
     protected function definition_inner($mform) {
-        
         $attributes = 'rows="6" cols="175"';
 		
         $mform->addElement('header','answers', get_string('answer', 'qtype_sqlupiti'));
 	$mform->setExpanded('answers');
         $mform->addElement('textarea', 'sqlanswer', get_string('sqlquery','qtype_sqlupiti'), $attributes);
 	$mform->setType('sqlanswer', PARAM_NOTAGS);
+        $mform->addRule('sqlanswer', get_string('missinganswer','qtype_sqlupiti'), 'required', null, 'server');
 	
 	$mform->addElement('header','databases', get_string('connect', 'qtype_sqlupiti'));
         $mform->setExpanded('databases');
 	$mform->addElement('text', 'server', get_string('conserver', 'qtype_sqlupiti'));
         $mform->setType('server', PARAM_NOTAGS);
+        $mform->addRule('server', get_string('missingserver','qtype_sqlupiti'), 'required', null, 'server');
 	$mform->addElement('text', 'username', get_string('conuser', 'qtype_sqlupiti'));
         $mform->setType('username', PARAM_NOTAGS);
+        $mform->addRule('username', get_string('missinguser','qtype_sqlupiti'), 'required', null, 'server');
 	$mform->addElement('text', 'password', get_string('conpass', 'qtype_sqlupiti'));
         $mform->setType('password', PARAM_NOTAGS);
+        $mform->addRule('password', get_string('missingpass','qtype_sqlupiti'), 'required', null, 'server');
 	$mform->addElement('text', 'dbname', get_string('condbname', 'qtype_sqlupiti'));
         $mform->setType('dbname', PARAM_NOTAGS);
+        $mform->addRule('dbname', get_string('missingdbname','qtype_sqlupiti'), 'required', null, 'server');
         $mform->closeHeaderBefore('databases');
 	
 	$mform->addElement('header', 'picture', get_string('ermodel', 'qtype_sqlupiti'));

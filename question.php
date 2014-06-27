@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_sqlupiti_question extends question_graded_automatically_with_countback {
+class qtype_sqlupiti_question extends question_graded_automatically {
     
     public $sqlanswer;
     public $server;
@@ -77,8 +77,7 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
     }
 
     public function get_correct_response() {
-        // TODO.
-        return array('sqlanswer' => $this->sqlanswer);
+        return array('answer' => $this->sqlanswer);
     }
 
     public function check_file_access($qa, $options, $component, $filearea,
@@ -100,9 +99,11 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
         $correct_result = $mysqli->query($correct_query);
         $correct_row_cnt = $correct_result->num_rows;
         
-        $student_result = $mysqli->query($student_query);
-        $student_row_cnt = $student_result->num_rows;
-        
+        $student_row_cnt = NULL;
+        if ($student_query != NULL) {
+            $student_result = $mysqli->query($student_query);
+            $student_row_cnt = $student_result->num_rows;
+        }
         if (strpos($correct_query, ';')){
             $correct_query = str_replace(';', '', $correct_query);
         }
@@ -138,10 +139,5 @@ class qtype_sqlupiti_question extends question_graded_automatically_with_countba
         }
 
         return array($fraction, question_state::graded_state_for_fraction($fraction));
-    }
-
-    public function compute_final_grade($responses, $totaltries) {
-        // TODO.
-        return 0;
     }
 }
