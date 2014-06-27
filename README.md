@@ -18,7 +18,7 @@ To install using git for the latest version (the master branch), type this comma
 root of your Moodle install:
 
     git clone git://github.com/KruxZhlajfa/sqlupiti question/type/sqlupiti
-    echo '/question/type/upiti' >> .git/info/exclude
+    echo '/question/type/sqlupiti' >> .git/info/exclude
 
 ####Installation From Downloaded zip file
 
