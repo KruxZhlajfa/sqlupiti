@@ -57,11 +57,15 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
 
         $outputattributes = array('style' => 'overflow:auto; max-height:400px; vertical-align:top;');
 
+        if ($options->readonly) {
+            $textareaattributes['readonly'] = 'readonly';
+            $button['disabled'] = 'disabled';
+        }
+        
         //Work out visuals for correctness of question
         $feedbackimg = '';
         if ($options->correctness) {
             list($fraction, ) = $question->grade_response(array('answer' => $currentanswer));
-            $textareaattributes['class'] = $this->feedback_class($fraction);
             $feedbackimg = $this->feedback_image($fraction);
         }
 
@@ -114,10 +118,6 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             $img = html_writer::tag('img', '', array('src' => $url->out(), 'class' => 'ermodelimg', 'style' => 'max-height: 400px; max-width: 600px;'));
         } else {
             $img = '';
-        }
-
-        if ($options->readonly) {
-            $textareaattributes['readonly'] = 'readonly';
         }
 
         $placeholder = false;

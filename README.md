@@ -12,6 +12,9 @@ A simple question type template.
 
 ###Installation
 
+* This question type does not require any other question types to be installed.
+* This version of this question type is compatible with Moodle 2.6.2+.
+
 ####Installation Using Git 
 
 To install using git for the latest version (the master branch), type this command in the
