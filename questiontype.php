@@ -68,23 +68,6 @@ class qtype_sqlupiti extends question_type {
     public function save_question_options($question) {
         global $DB;
         
-	// Fetch old answer ids so that we can reuse them.
-        $oldanswers = $DB->get_records('question_answers',
-                    array('question' => $question->id), 'id ASC');
-		
-        $answer = array_shift($oldanswers);
-        if (!$answer) {
-            $answer = new stdClass();
-            $answer->question = $question->id;
-            $answer->answer = $question->sqlanswer;
-            $answer->feedback = '';
-            $answer->id = $DB->insert_record('question_answers', $answer);
-        }
-		
-	$answer->answer = $question->sqlanswer;
-		
-	$DB->update_record('question_answers', $answer);
-        
         if ($options = $DB->get_record('qtype_sqlupiti_options', array('questionid' => $question->id))) {
             // No need to do anything, since the answer IDs won't have changed
             // But we'll do it anyway, just for robustness.

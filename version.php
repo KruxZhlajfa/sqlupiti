@@ -31,4 +31,4 @@ $plugin->version   = 2014062801;
 
 $plugin->requires  = 2013111802;
 
-$plugin->maturity  = MATURITY_ALPHA;
+$plugin->maturity  = MATURITY_STABLE;

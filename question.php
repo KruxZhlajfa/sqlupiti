@@ -87,6 +87,9 @@ class qtype_sqlupiti_question extends question_graded_automatically {
             $question = $qa->get_question();
             $itemid = reset($args);
             return $itemid == $question->id;
+        } else {
+            return parent::check_file_access($qa, $options, $component, $filearea,
+                    $args, $forcedownload);
         }
     }
 

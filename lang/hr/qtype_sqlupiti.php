@@ -39,7 +39,7 @@ $string['pluginname_link'] = 'question/type/sqlupiti';
 $string['pluginnameadding'] = 'Dodavanje pitanja za SQL upit';
 $string['pluginnameediting'] = 'Uređivanje pitanja za SQL upit';
 $string['pluginnamesummary'] = 'SQL upit je tip pitanja u kojem studenti mogu upisivati SQL upite i provjerava se njihova točnost. '
-        . 'Točnost se provjerava na osnovu već upisanog točnog upita od strane profesora. Ne ovisi od "ORDER BY", tj. o redoslijedu ispisa upita.';
+        . 'Točnost se provjerava na osnovu već upisanog točnog upita od strane profesora. Ona ne ovisi o redoslijedu ispisa upita.';
 $string['sqlquery'] = 'Točan SQL upit';
 $string['runquery'] = 'Pokreni upit';
 $string['numofrows'] = 'Broj redaka: ';

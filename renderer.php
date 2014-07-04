@@ -76,9 +76,8 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
 
             $query_result = $mysqli->query($sqlquery);
 
-            $row_cnt = $query_result->num_rows;
-
             if ($query_result) {
+                $row_cnt = $query_result->num_rows;
                 $rows = $query_result->fetch_all();
                 $table = new html_table();
                 $head = array();
@@ -96,7 +95,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                 $output = get_string('numofrows', 'qtype_sqlupiti') . '<b>' . $row_cnt . '</b>' . '<br>';
                 $output .= html_writer::table($table);
             } else {
-                $output = 'ERROR:' . '<br>' . $mysqli->error;
+                $output = '<b style="color: red;">' . 'ERROR:' . '</b><br>' . $mysqli->error;
             }
         } else {
             $output = '';
@@ -141,7 +140,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                 . html_writer::end_tag('td') . html_writer::end_tag('td') . html_writer::end_tag('table')
                 . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . $img
-                . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table');
+                . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table') . '<br>';
 
 
         if ($qa->get_state() == question_state::$invalid) {

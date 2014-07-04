@@ -39,7 +39,7 @@ $string['pluginnameadding'] = 'Adding question for SQL query';
 $string['pluginnameediting'] = 'Editing question for SQL query';
 $string['pluginnamesummary'] = 'SQL query is a question type in which students can write SQL queries and it\'s correctness is determined. '
         . 'The correctness is determined with the SQL query that the teacher has entered for that question. '
-        . 'The correctness doesn\'t depend on "ORDER BY", i.e. the order of the result doesn\'t matter.';
+        . 'The correctness doesn\'t depend on the order of the result.';
 $string['sqlquery'] = 'The right SQL query for the question';
 $string['runquery'] = 'Run query';
 $string['numofrows'] = 'Number of rows: ';

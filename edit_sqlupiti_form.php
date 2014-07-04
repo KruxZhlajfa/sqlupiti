@@ -63,6 +63,7 @@ class qtype_sqlupiti_edit_form extends question_edit_form {
         $mform->closeHeaderBefore('databases');
 	
 	$mform->addElement('header', 'picture', get_string('ermodel', 'qtype_sqlupiti'));
+        $mform->setExpanded('picture');
         $mform->addElement('filemanager', 'ermodel', get_string('ermodel', 'qtype_sqlupiti'), null,
                     array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('image')));
         
