@@ -57,11 +57,12 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
 
         $outputattributes = array('style' => 'overflow:auto; max-height:400px; vertical-align:top;');
 
+        //disable button and textarea if reviewing quiz
         if ($options->readonly) {
             $textareaattributes['readonly'] = 'readonly';
             $button['disabled'] = 'disabled';
         }
-        
+
         //Work out visuals for correctness of question
         $feedbackimg = '';
         if ($options->correctness) {
@@ -69,9 +70,12 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             $feedbackimg = $this->feedback_image($fraction);
         }
 
-        if (!empty($currentanswer)) {
-            $mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
+        @$mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
 
+        if ($mysqli->connect_error) {
+            $output = '<b style="color: red;">' . get_string('conerror', 'qtype_sqlupiti') . '<br><br>'
+                    . get_string('conerrormessage', 'qtype_sqlupiti') . '</b>';
+        } else if (!empty($currentanswer)) {
             $sqlquery = $currentanswer;
 
             $query_result = $mysqli->query($sqlquery);
@@ -101,6 +105,8 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             $output = '';
         }
 
+        //print the result or error for the student query
+        //get image for ER model
         $qubaid = $qa->get_usage_id();
         $slot = $qa->get_slot();
         $fs = get_file_storage();
@@ -161,8 +167,13 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             $correct_row_cnt = $correct_result->num_rows;
 
             $student_query = $response;
-            $student_result = $mysqli->query($student_query);
-            $student_row_cnt = $student_result->num_rows;
+            $student_row_cnt = NULL;
+            if ($student_query != NULL) {
+                $student_result = $mysqli->query($student_query);
+                if (!$mysqli->error) {
+                    $student_row_cnt = $student_result->num_rows;
+                }
+            }
 
             if ($correct_row_cnt < $student_row_cnt) {
                 return get_string('correctlower', 'qtype_sqlupiti', $correct_row_cnt);
@@ -178,7 +189,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
 
     public function correct_response(question_attempt $qa) {
         $question = $qa->get_question();
-        return get_string('correctanswer', 'qtype_sqlupiti') . '<b>' . $question->sqlanswer. '</b>';
+        return get_string('correctanswer', 'qtype_sqlupiti') . '<b>' . $question->sqlanswer . '</b>';
     }
 
 }

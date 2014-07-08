@@ -105,7 +105,9 @@ class qtype_sqlupiti_question extends question_graded_automatically {
         $student_row_cnt = NULL;
         if ($student_query != NULL) {
             $student_result = $mysqli->query($student_query);
-            $student_row_cnt = $student_result->num_rows;
+            if (!$mysqli->error){
+                $student_row_cnt = $student_result->num_rows;
+            }
         }
         if (strpos($correct_query, ';')){
             $correct_query = str_replace(';', '', $correct_query);

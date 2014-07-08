@@ -52,3 +52,6 @@ $string['missingserver'] = 'Ime servera je obavezno!';
 $string['missinguser'] = 'Korisničko ime je obavezno!';
 $string['missingpass'] = 'Lozinka je obavezna!';
 $string['missingdbname'] = 'Ime baze podataka je obavezna';
+$string['conerror'] = 'GREŠKA!';
+$string['conerrormessage'] = 'U pitanju se nalaze krivi podaci za povezivanje na bazu podataka ili nije moguće povezivanje. '
+        . 'Pozovite profesora u vezi greške! Greška je povezana za ovo pitanje!';
