@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 // This file is part of Moodle - http://moodle.org/
 //
@@ -55,7 +55,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             'value' => get_string('runquery', 'qtype_sqlupiti')
         );
 
-        $outputattributes = array('style' => 'overflow:auto; max-height:400px; vertical-align:top;');
+        $outputattributes = array('style' => 'overflow:auto; max-height:300px; max-width:800px; vertical-align:top;');
 
         //disable button and textarea if reviewing quiz
         if ($options->readonly) {
@@ -135,16 +135,16 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         }
 
         $result = html_writer::start_tag('table');
-        $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext);
-        $result .= html_writer::start_tag('td', array('rowspan' => '3', 'style' => 'vertical-align:top;'))
-                . html_writer::start_tag('div', $outputattributes) . $output
-                . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr');
+        $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext) . html_writer::end_tag('tr'); 
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::start_tag('table') . html_writer::start_tag('tr')
                 . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes)
                 . html_writer::end_tag('td') . html_writer::start_tag('td') . $feedbackimg . html_writer::end_tag('td');
         $result .= html_writer::end_tag('tr') . html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::tag('input', '', $button)
                 . html_writer::end_tag('td') . html_writer::end_tag('td') . html_writer::end_tag('table')
                 . html_writer::end_tag('td') . html_writer::end_tag('tr');
+        $result .= html_writer::start_tag('tr') . html_writer::start_tag('td', array('style' => 'vertical-align:top;'))
+                . html_writer::start_tag('div', $outputattributes) . $output
+                . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . $img
                 . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table') . '<br>';
 
