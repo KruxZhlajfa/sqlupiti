@@ -55,7 +55,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             'value' => get_string('runquery', 'qtype_sqlupiti')
         );
 
-        $outputattributes = array('style' => 'overflow:auto; max-height:300px; max-width:800px; vertical-align:top;');
+        $outputattributes = array('style' => 'overflow:auto; max-height:300px; max-width:500px; vertical-align:top;');
 
         //disable button and textarea if reviewing quiz
         if ($options->readonly) {
@@ -71,11 +71,12 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         }
 
         @$mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
-
+        
         if ($mysqli->connect_error) {
             $output = '<b style="color: red;">' . get_string('conerror', 'qtype_sqlupiti') . '<br><br>'
                     . get_string('conerrormessage', 'qtype_sqlupiti') . '</b>';
         } else if (!empty($currentanswer)) {
+            $mysqli->set_charset("utf8");
             $sqlquery = $currentanswer;
 
             $query_result = $mysqli->query($sqlquery);
@@ -135,6 +136,8 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         }
 
         $result = html_writer::start_tag('table');
+        $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . $img
+                . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::tag('td', $questiontext) . html_writer::end_tag('tr'); 
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . html_writer::start_tag('table') . html_writer::start_tag('tr')
                 . html_writer::start_tag('td', array('rowspan' => '2')) . html_writer::tag('textarea', $currentanswer, $textareaattributes)
@@ -144,9 +147,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                 . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td', array('style' => 'vertical-align:top;'))
                 . html_writer::start_tag('div', $outputattributes) . $output
-                . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr');
-        $result .= html_writer::start_tag('tr') . html_writer::start_tag('td') . $img
-                . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table') . '<br>';
+                . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table') . '<br>';
 
 
         if ($qa->get_state() == question_state::$invalid) {
