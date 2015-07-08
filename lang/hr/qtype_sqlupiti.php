@@ -55,3 +55,9 @@ $string['missingdbname'] = 'Ime baze podataka je obavezna';
 $string['conerror'] = 'GREŠKA!';
 $string['conerrormessage'] = 'U pitanju se nalaze krivi podaci za povezivanje na bazu podataka ili nije moguće povezivanje. '
         . 'Pozovite profesora u vezi greške! Greška je povezana za ovo pitanje!';
+$string['queryno'] = 'Dodatni upit {$a}';
+$string['nonegrade'] = 'Ništa';
+$string['errgradesetanswerblank'] = 'Dodatni upit je upisan, ali ocjena nije postavljena.';
+$string['erranswersetgradeblank'] = 'Ocjena je oznacena, ali dodatni upit nije upisan.';
+$string['stuquery'] = 'Rezultat upita od studenta:';
+$string['corrquery'] = 'Rezultat točnog upita:';

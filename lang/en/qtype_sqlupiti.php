@@ -54,4 +54,10 @@ $string['missingpass'] = 'Password is required!';
 $string['missingdbname'] = 'Database name is required!';
 $string['conerror'] = 'ERROR!';
 $string['conerrormessage'] = 'The data entered for the connection to the database is incorrect or the connection is not possible. '
-        . 'Contact your teacher to resolve the error! The error is related to this exact question!';
+        . 'Contact your teacher to resolve the error! The error is related to this exact question!';	
+$string['queryno'] = 'Addtitional query {$a}';
+$string['nonegrade'] = 'None';
+$string['errgradesetanswerblank'] = 'Additional query is set, but no grade is selected.';
+$string['erranswersetgradeblank'] = 'Grade is selected, but no additional query is set.';
+$string['stuquery'] = 'Student\'s query result:';
+$string['corrquery'] = 'Correct query result:';

@@ -94,12 +94,36 @@ class qtype_sqlupiti_question extends question_graded_automatically {
     }
 
     public function grade_response(array $response) {
-        $mysqli = new mysqli($this->server, $this->username, $this->password, $this->dbname);
+		
+		$fraction = $this->is_query_identical($this->sqlanswer, $response['answer'], 1);
+		
+		//sort question_answers by fraction desc
+		$col  = 'fraction';
+		$sort = array();
+		foreach ($this->answers as $i => $obj) {
+			$sort[$i] = $obj->{$col};
+		}
+		$sorted_db = array_multisort($sort, SORT_DESC, $this->answers);
+		
+		if ($fraction != 1){
+			foreach ($this->answers as $aid => $answer){
+				$no_html_answer = htmlspecialchars_decode($answer->answer);
+				$no_html_answer = strip_tags($no_html_answer);
+				$fraction = $this->is_query_identical($no_html_answer, $response['answer'], floatval($answer->fraction));
+				if ($fraction != 0)
+					break;
+				else
+					continue;
+			}
+		}
 
-        $correct_query = $this->sqlanswer;
-        $student_query = $response['answer'];
-        
-        $correct_result = $mysqli->query($correct_query);
+        return array($fraction, question_state::graded_state_for_fraction($fraction));
+    }
+	
+	public function is_query_identical($correct_query, $student_query, $max_fraction){
+		$mysqli = new mysqli($this->server, $this->username, $this->password, $this->dbname);
+		
+		$correct_result = $mysqli->query($correct_query);
         $correct_row_cnt = $correct_result->num_rows;
         
         $student_row_cnt = NULL;
@@ -135,14 +159,14 @@ class qtype_sqlupiti_question extends question_graded_automatically {
         
         if ($correct_row_cnt == $student_row_cnt) {
             if ($is_equal[0][0] === "identical") {
-                $fraction = 1;
+				$fraction = $max_fraction;
             } else {
                 $fraction = 0;
             }
         } else {
             $fraction = 0;
         }
-
-        return array($fraction, question_state::graded_state_for_fraction($fraction));
-    }
+		
+		return $fraction;
+	}
 }

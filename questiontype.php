@@ -67,6 +67,37 @@ class qtype_sqlupiti extends question_type {
 
     public function save_question_options($question) {
         global $DB;
+		
+		$context = $question->context;
+		$oldanswers = $DB->get_records('question_answers',
+                array('question' => $question->id), 'id ASC');
+		
+		//echo implode($question->answer);
+		
+		foreach ($question->answer as $key => $answerdata) {
+            if (trim($answerdata['text']) == '') {
+                continue;
+            }
+			//echo gettype();
+            // Update an existing answer if possible.
+            $answer = array_shift($oldanswers);
+            if (!$answer) {
+                $answer = new stdClass();
+                $answer->question = $question->id;
+                $answer->answer = '';
+                $answer->feedback = '';
+                $answer->id = $DB->insert_record('question_answers', $answer);
+            }
+
+            // Doing an import.
+			/*$answer->answer = $this->import_or_save_files($answerdata,
+                    $context, 'question', 'answer', $answer->id);*/
+			$answer->answer = $answerdata['text'];
+            $answer->fraction = $question->fraction[$key];
+			$answer->answerformat = 1;
+
+            $DB->update_record('question_answers', $answer);
+        }
         
         if ($options = $DB->get_record('qtype_sqlupiti_options', array('questionid' => $question->id))) {
             // No need to do anything, since the answer IDs won't have changed
@@ -99,17 +130,15 @@ class qtype_sqlupiti extends question_type {
         global $DB, $OUTPUT;
         // Get additional information from database
         // and attach it to the question object.
-        if (!$question->options = $DB->get_record('qtype_sqlupiti_options',
-                array('questionid' => $question->id))) {
-            echo $OUTPUT->notification('Error: Missing question options!');
-            return false;
-        }
-        return true;
+		global $DB, $OUTPUT;
+        $question->options = $DB->get_record('qtype_sqlupiti_options',
+                array('questionid' => $question->id), '*', MUST_EXIST);
+        parent::get_question_options($question);
     }
 
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
-        $this->initialise_question_answers($question, $questiondata);
+        $this->initialise_question_answers($question, $questiondata, false);
     }
 
     public function get_random_guess_score($questiondata) {

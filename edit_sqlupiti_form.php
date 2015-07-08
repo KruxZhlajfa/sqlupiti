@@ -36,15 +36,46 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_sqlupiti_edit_form extends question_edit_form {
+	
+	public function get_per_answer_fields($mform, $label, $gradeoptions,
+            &$repeatedoptions, &$answersoption) {
+				
+		$attributes = 'rows="6" cols="100"';
+		$repeated = array();
+        $repeated[] = $mform->createElement('editor', 'answer',
+                $label, $attributes);
+        $repeated[] = $mform->createElement('select', 'fraction',
+                get_string('grade'), $gradeoptions);
+        $repeatedoptions['answer']['type'] = PARAM_NOTAGS;
+        $repeatedoptions['fraction']['default'] = 0;
+        $answersoption = 'answers';
+        return $repeated;
+    }
 
     protected function definition_inner($mform) {
-        $attributes = 'rows="6" cols="175"';
+        $attributes = 'rows="6" cols="100"';
+		$fraction_options = array(
+			'0.0' => get_string('nonegrade', 'qtype_sqlupiti'),
+			'0.9' => '90%',
+			'0.8' => '80%',
+			'0.7' => '70%',
+			'0.6' => '60%',
+			'0.5' => '50%',
+			'0.4' => '40%',
+			'0.3' => '30%',
+			'0.2' => '20%',
+			'0.1' => '10%',
+		);
 		
         $mform->addElement('header','answers', get_string('answer', 'qtype_sqlupiti'));
 	$mform->setExpanded('answers');
         $mform->addElement('textarea', 'sqlanswer', get_string('sqlquery','qtype_sqlupiti'), $attributes);
 	$mform->setType('sqlanswer', PARAM_NOTAGS);
         $mform->addRule('sqlanswer', get_string('missinganswer','qtype_sqlupiti'), 'required', null, 'server');
+		
+		$this->add_per_answer_fields($mform, get_string('queryno', 'qtype_sqlupiti', '{no}'),
+                $fraction_options, 1, 2);
+		
 	
 	$mform->addElement('header','databases', get_string('connect', 'qtype_sqlupiti'));
         $mform->setExpanded('databases');
@@ -71,7 +102,8 @@ class qtype_sqlupiti_edit_form extends question_edit_form {
 
     protected function data_preprocessing($question) {
         $question = parent::data_preprocessing($question);
-        $question = $this->data_preprocessing_hints($question);
+        $question = $this->data_preprocessing_answers($question, true);
+        //$question = $this->data_preprocessing_hints($question, true, true);
         
         // Initialise file manager for ermodel.
         $draftitemid = file_get_submitted_draft_itemid('ermodel');
@@ -82,6 +114,28 @@ class qtype_sqlupiti_edit_form extends question_edit_form {
         $question->ermodel = $draftitemid;
 
         return $question;
+    }
+	
+	public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+        $answers = $data['answer'];
+
+        foreach ($answers as $key => $answer) {
+            // Check no of choices.
+            $trimmedanswer = trim($answer['text']);
+            $fraction = (float) $data['fraction'][$key];
+            if ($trimmedanswer === '' && empty($fraction)) {
+                continue;
+            }
+            if ($trimmedanswer === '') {
+                $errors['fraction['.$key.']'] = get_string('errgradesetanswerblank', 'qtype_sqlupiti');
+            }
+			if($fraction == 0){
+				$errors['fraction['.$key.']'] = get_string('erranswersetgradeblank', 'qtype_sqlupiti');
+			}
+        }
+		
+        return $errors;
     }
 
     public function qtype() {

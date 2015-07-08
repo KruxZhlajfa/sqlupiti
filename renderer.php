@@ -36,6 +36,8 @@ defined('MOODLE_INTERNAL') || die();
 class qtype_sqlupiti_renderer extends qtype_renderer {
 
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
+		
+		global $CONTEXT, $COURSE, $USER;
 
         $question = $qa->get_question();
         $currentanswer = $qa->get_last_qt_var('answer');
@@ -45,7 +47,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
 
         $textareaattributes = array(
             'rows' => '5',
-            'cols' => '80',
+            'cols' => '100',
             'name' => $inputname,
             'id' => $inputname
         );
@@ -55,13 +57,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             'value' => get_string('runquery', 'qtype_sqlupiti')
         );
 
-        $outputattributes = array('style' => 'overflow:auto; max-height:300px; max-width:500px; vertical-align:top;');
-
-        //disable button and textarea if reviewing quiz
-        if ($options->readonly) {
-            $textareaattributes['readonly'] = 'readonly';
-            $button['disabled'] = 'disabled';
-        }
+        $outputattributes = array('style' => 'overflow:auto; max-height:400px; max-width:750px; vertical-align:top;');
 
         //Work out visuals for correctness of question
         $feedbackimg = '';
@@ -69,41 +65,25 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
             list($fraction, ) = $question->grade_response(array('answer' => $currentanswer));
             $feedbackimg = $this->feedback_image($fraction);
         }
-
-        @$mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
-        
-        if ($mysqli->connect_error) {
-            $output = '<b style="color: red;">' . get_string('conerror', 'qtype_sqlupiti') . '<br><br>'
-                    . get_string('conerrormessage', 'qtype_sqlupiti') . '</b>';
-        } else if (!empty($currentanswer)) {
-            $mysqli->set_charset("utf8");
-            $sqlquery = $currentanswer;
-
-            $query_result = $mysqli->query($sqlquery);
-
-            if ($query_result) {
-                $row_cnt = $query_result->num_rows;
-                $rows = $query_result->fetch_all();
-                $table = new html_table();
-                $head = array();
-                $data = array();
-                $colnum = mysqli_num_fields($query_result);
-                for ($i = 0; $i < $colnum; $i++) {
-                    array_push($head, $query_result->fetch_field()->name);
-                }
-                foreach ($rows as $value) {
-                    array_push($data, $value);
-                }
-                $table->head = $head;
-                $table->data = $data;
-                $query_result->close();
-                $output = get_string('numofrows', 'qtype_sqlupiti') . '<b>' . $row_cnt . '</b>' . '<br>';
-                $output .= html_writer::table($table);
-            } else {
-                $output = '<b style="color: red;">' . 'ERROR:' . '</b><br>' . $mysqli->error;
-            }
-        } else {
-            $output = '';
+		
+		$output = $this->generate_query_output($currentanswer, $qa, null);
+		$output_teacher = null;
+		
+		//find out the role of user
+		$context = context_course::instance($COURSE->id);
+		$roles = get_user_roles($context, $USER->id, false);
+		$role = key($roles);
+		$roleid = $roles[$role]->roleid;
+		$roleshortname = $roles[$role]->shortname;
+		
+		//disable button and textarea if reviewing quiz
+        if ($options->readonly) {
+            $textareaattributes['readonly'] = 'readonly';
+            $button['disabled'] = 'disabled';
+			if($roleshortname != 'student'){
+				$output = $this->generate_query_output($currentanswer, $qa, get_string('stuquery', 'qtype_sqlupiti'));
+				$output_teacher = $this->generate_query_output($question->sqlanswer, $qa, get_string('corrquery', 'qtype_sqlupiti'));
+			}
         }
 
         //print the result or error for the student query
@@ -121,7 +101,7 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                 }
                 $url = moodle_url::make_pluginfile_url($question->contextid, 'qtype_sqlupiti', 'ermodel', "$qubaid/$slot/{$question->id}", '/', $file->get_filename());
             }
-            $img = html_writer::tag('img', '', array('src' => $url->out(), 'class' => 'ermodelimg', 'style' => 'max-height: 400px; max-width: 600px;'));
+            $img = html_writer::tag('img', '', array('src' => $url->out(), 'class' => 'ermodelimg', 'style' => 'max-height: 500px; max-width: 750px;'));
         } else {
             $img = '';
         }
@@ -146,7 +126,9 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
                 . html_writer::end_tag('td') . html_writer::end_tag('td') . html_writer::end_tag('table')
                 . html_writer::end_tag('td') . html_writer::end_tag('tr');
         $result .= html_writer::start_tag('tr') . html_writer::start_tag('td', array('style' => 'vertical-align:top;'))
-                . html_writer::start_tag('div', $outputattributes) . $output
+                . html_writer::start_tag('div', $outputattributes) . $output . html_writer::start_tag('td', array('style' => 'vertical-align:top;'))
+                . html_writer::start_tag('div', $outputattributes) . $output_teacher
+                . html_writer::end_tag('div') . html_writer::end_tag('td')
                 . html_writer::end_tag('div') . html_writer::end_tag('td') . html_writer::end_tag('tr') . html_writer::end_tag('table') . '<br>';
 
 
@@ -192,5 +174,51 @@ class qtype_sqlupiti_renderer extends qtype_renderer {
         $question = $qa->get_question();
         return get_string('correctanswer', 'qtype_sqlupiti') . '<b>' . $question->sqlanswer . '</b>';
     }
+	
+	public function generate_query_output($query, question_attempt $qa, $result_name){
+		$question = $qa->get_question();
+		$output = null;
+		
+		@$mysqli = new mysqli($question->server, $question->username, $question->password, $question->dbname);
+        
+        if ($mysqli->connect_error) {
+            $output = '<b style="color: red;">' . get_string('conerror', 'qtype_sqlupiti') . '<br><br>'
+                    . get_string('conerrormessage', 'qtype_sqlupiti') . '</b>';
+        } else if (!empty($query)) {
+            $mysqli->set_charset("utf8");
+            $sqlquery = $query;
+
+            $query_result = $mysqli->query($sqlquery);
+
+            if ($query_result) {
+                $row_cnt = $query_result->num_rows;
+                $rows = $query_result->fetch_all();
+                $table = new html_table();
+                $head = array();
+                $data = array();
+                $colnum = mysqli_num_fields($query_result);
+                for ($i = 0; $i < $colnum; $i++) {
+                    array_push($head, $query_result->fetch_field()->name);
+                }
+                foreach ($rows as $value) {
+                    array_push($data, $value);
+                }
+                $table->head = $head;
+                $table->data = $data;
+                $query_result->close();
+				if($result_name != null){
+					$output .= '<b>' . $result_name . '</b>' . '<br>';
+				}
+                $output .= get_string('numofrows', 'qtype_sqlupiti') . '<b>' . $row_cnt . '</b>' . '<br>';
+                $output .= html_writer::table($table);
+            } else {
+                $output = '<b style="color: red;">' . 'ERROR:' . '</b><br>' . $mysqli->error;
+            }
+        } else {
+            $output = '';
+        }
+		
+		return $output;
+	}
 
 }
