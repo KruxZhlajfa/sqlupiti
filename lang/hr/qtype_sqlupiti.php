@@ -57,7 +57,7 @@ $string['conerrormessage'] = 'U pitanju se nalaze krivi podaci za povezivanje na
         . 'Pozovite profesora u vezi greške! Greška je povezana za ovo pitanje!';
 $string['queryno'] = 'Dodatni upit {$a}';
 $string['nonegrade'] = 'Ništa';
-$string['errgradesetanswerblank'] = 'Dodatni upit je upisan, ali ocjena nije postavljena.';
-$string['erranswersetgradeblank'] = 'Ocjena je oznacena, ali dodatni upit nije upisan.';
+$string['errgradesetanswerblank'] = 'Ocjena je oznacena, ali dodatni upit nije upisan.';
+$string['erranswersetgradeblank'] = 'Dodatni upit je upisan, ali ocjena nije postavljena.';
 $string['stuquery'] = 'Rezultat upita od studenta:';
 $string['corrquery'] = 'Rezultat točnog upita:';
